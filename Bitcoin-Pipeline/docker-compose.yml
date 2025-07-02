@@ -1,29 +1,4 @@
 services:
-  fetcher:
-    build:
-      context: .
-      dockerfile: data_fetcher/Dockerfile
-    environment:
-      DB_HOST: postgres
-      DB_NAME: bitcoin_db
-      DB_USER: bitcoinuser
-      DB_PASS: bitcoinpass
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-  airflow:
-    build:
-      context: .
-      dockerfile: airflow/Dockerfile
-    environment:
-      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
-    ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   postgres:
     image: postgres:15
     environment:
@@ -38,6 +13,29 @@ services:
       test: ["CMD-SHELL", "pg_isready -U bitcoinuser"]
       interval: 10s
       retries: 5
+
+  fetcher:
+    build:
+      context: ./data_fetcher
+    environment:
+      DB_HOST: postgres
+      DB_NAME: bitcoin_db
+      DB_USER: bitcoinuser
+      DB_PASS: bitcoinpass
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  airflow:
+    build:
+      context: ./airflow
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   pgdata:
