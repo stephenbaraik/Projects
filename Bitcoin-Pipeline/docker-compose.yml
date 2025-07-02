@@ -2,36 +2,23 @@ services:
   postgres:
     image: postgres:14
     environment:
-      POSTGRES_USER: btc_user
-      POSTGRES_PASSWORD: btc_pass
-      POSTGRES_DB: btc_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U btc_user"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
-      timeout: 5s
       retries: 10
 
-  data_fetcher:
-    build: ./data_fetcher
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      - DB_HOST=postgres
-      - DB_NAME=btc_db
-      - DB_USER=btc_user
-      - DB_PASS=btc_pass
-    # Logs appear in console, auto-run disabled to let Airflow trigger it
-
   airflow:
-    build: ./airflow
+    image: apache/airflow:2.9.0-python3.11
     environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://btc_user:btc_pass@postgres/btc_db
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
       - _AIRFLOW_WWW_USER_USERNAME=airflow
       - _AIRFLOW_WWW_USER_PASSWORD=airflow
       - PYTHONUNBUFFERED=1
@@ -42,11 +29,17 @@ services:
       - ./airflow/dags:/opt/airflow/dags
     ports:
       - "8080:8080"
-    entrypoint: /bin/bash -c "
-      airflow db check || airflow db init;
-      airflow db upgrade;
-      airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@example.com || true;
-      airflow scheduler & airflow webserver;
-      "
+    entrypoint: /bin/bash -c "airflow db init && airflow db upgrade && airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@example.com && airflow scheduler & airflow webserver"
+
+  data_fetcher:
+    build: ./data_fetcher
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
 volumes:
   pg_data: {}

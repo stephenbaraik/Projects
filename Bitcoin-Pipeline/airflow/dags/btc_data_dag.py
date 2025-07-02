@@ -4,21 +4,23 @@ from datetime import datetime, timedelta
 
 default_args = {
     'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 1, 1),
     'retries': 1,
-    'retry_delay': timedelta(minutes=2)
+    'retry_delay': timedelta(minutes=5),
 }
 
-with DAG(
-    dag_id='btc_data_fetch_dag',
+dag = DAG(
+    'btc_data_pipeline',
     default_args=default_args,
-    start_date=datetime(2024, 1, 1),
+    description='Fetch BTC OHLC and store in DB',
     schedule_interval='@hourly',
-    catchup=False
-) as dag:
+)
 
-    fetch_data = BashOperator(
-        task_id='fetch_binance_data',
-        bash_command='docker-compose run --rm data_fetcher'
-    )
+fetch_task = BashOperator(
+    task_id='fetch_binance_data',
+    bash_command='python /app/fetch_binance_ohlc.py',
+    dag=dag,
+)
 
-    fetch_data
+fetch_task
