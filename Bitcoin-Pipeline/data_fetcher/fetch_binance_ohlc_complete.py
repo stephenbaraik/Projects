@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Binance OHLC Data Fetcher
+Complete Binance OHLC Data Fetcher
 Fetches cryptocurrency OHLC data from Binance API and stores in PostgreSQL
 """
 
@@ -375,4 +375,94 @@ class BinanceDataFetcher:
             records = self.transform_klines(klines_data, symbol, timeframe)
             
             if not records:
-                logger.warning(f"No valid records after transformation for {symbol}
+                logger.warning(f"No valid records after transformation for {symbol} {timeframe}")
+                self.log_pipeline_execution(
+                    dag_id, task_id, symbol, timeframe, 0, "SUCCESS",
+                    start_time=start_time, end_time=datetime.now()
+                )
+                return {"status": "success", "records_processed": 0}
+            
+            # Store data in database
+            inserted, updated = self.insert_ohlc_data(records)
+            total_processed = inserted + updated
+            
+            # Log successful execution
+            end_time = datetime.now()
+            self.log_pipeline_execution(
+                dag_id, task_id, symbol, timeframe, total_processed, "SUCCESS",
+                start_time=start_time, end_time=end_time
+            )
+            
+            logger.info(f"Data fetch completed successfully: {total_processed} records processed")
+            return {
+                "status": "success",
+                "records_processed": total_processed,
+                "inserted": inserted,
+                "updated": updated,
+                "duration_seconds": int((end_time - start_time).total_seconds())
+            }
+            
+        except Exception as e:
+            end_time = datetime.now()
+            error_message = str(e)
+            logger.error(f"Data fetch failed: {error_message}")
+            
+            # Log failed execution
+            self.log_pipeline_execution(
+                dag_id, task_id, symbol, timeframe, 0, "FAILED",
+                error_message=error_message, start_time=start_time, end_time=end_time
+            )
+            
+            return {
+                "status": "failed",
+                "error": error_message,
+                "duration_seconds": int((end_time - start_time).total_seconds())
+            }
+
+
+def main():
+    """Main execution function"""
+    # Configuration
+    SYMBOLS = os.getenv('BTC_SYMBOLS', 'BTCUSDT,ETHUSDT').split(',')
+    TIMEFRAMES = os.getenv('BTC_TIMEFRAMES', '1h').split(',')
+    LIMIT = int(os.getenv('BTC_LIMIT', '1000'))
+    BACKFILL_HOURS = int(os.getenv('BTC_BACKFILL_HOURS', '24'))
+    
+    logger.info(f"Starting Bitcoin data fetcher with symbols: {SYMBOLS}, timeframes: {TIMEFRAMES}")
+    
+    fetcher = BinanceDataFetcher()
+    
+    try:
+        # Connect to database
+        if not fetcher.connect_db():
+            logger.error("Failed to connect to database")
+            sys.exit(1)
+        
+        # Fetch data for each symbol and timeframe combination
+        for symbol in SYMBOLS:
+            for timeframe in TIMEFRAMES:
+                logger.info(f"Processing {symbol} {timeframe}")
+                result = fetcher.fetch_and_store_data(
+                    symbol=symbol.strip(),
+                    timeframe=timeframe.strip(),
+                    limit=LIMIT,
+                    backfill_hours=BACKFILL_HOURS
+                )
+                
+                if result["status"] == "failed":
+                    logger.error(f"Failed to process {symbol} {timeframe}: {result.get('error')}")
+                else:
+                    logger.info(f"Successfully processed {symbol} {timeframe}: {result['records_processed']} records")
+    
+    except Exception as e:
+        logger.error(f"Critical error in main execution: {e}")
+        sys.exit(1)
+    
+    finally:
+        fetcher.close_db()
+    
+    logger.info("Bitcoin data fetcher completed")
+
+
+if __name__ == "__main__":
+    main()
