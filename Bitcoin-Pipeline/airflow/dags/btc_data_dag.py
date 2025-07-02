@@ -2,6 +2,8 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from datetime import datetime, timedelta
 
+import os
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -19,7 +21,7 @@ dag = DAG(
 
 fetch_task = BashOperator(
     task_id='fetch_binance_data',
-    bash_command='python /app/fetch_binance_ohlc.py',
+    bash_command='cd /opt/airflow/dags/fetcher && python fetch_binance_ohlc.py',
     dag=dag,
 )
 
