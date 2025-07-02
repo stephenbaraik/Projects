@@ -15,7 +15,8 @@ services:
       retries: 5
 
   fetcher:
-    build: ./data_fetcher
+    build:
+      context: ./data_fetcher
     environment:
       DB_HOST: postgres
       DB_NAME: bitcoin_db
@@ -26,7 +27,8 @@ services:
         condition: service_healthy
 
   airflow:
-    build: ./airflow
+    build:
+      context: ./airflow
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
     ports:
@@ -37,3 +39,8 @@ services:
 
 volumes:
   pgdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: /var/lib/postgresql/data
+      o: bind
