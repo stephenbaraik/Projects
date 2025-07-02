@@ -15,7 +15,7 @@ services:
       interval: 5s
       retries: 10
 
-  airflow:
+  airflow-webserver:
     image: apache/airflow:2.9.0-python3.11
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
@@ -27,9 +27,22 @@ services:
         condition: service_healthy
     volumes:
       - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
     ports:
       - "8080:8080"
-    entrypoint: /bin/bash -c "airflow db init && airflow db upgrade && airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@example.com && airflow scheduler & airflow webserver"
+    command: bash -c "airflow db migrate && airflow db upgrade && airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@example.com && exec airflow webserver"
+
+  airflow-scheduler:
+    image: apache/airflow:2.9.0-python3.11
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - airflow-webserver
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
+    command: bash -c "airflow db migrate && exec airflow scheduler"
 
   data_fetcher:
     build: ./data_fetcher
@@ -41,5 +54,6 @@ services:
       - DB_NAME=${POSTGRES_DB}
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
+
 volumes:
   pg_data: {}
