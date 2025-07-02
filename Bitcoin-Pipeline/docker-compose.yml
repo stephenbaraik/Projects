@@ -14,7 +14,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U btc_user"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   data_fetcher:
     build: ./data_fetcher
@@ -26,6 +26,7 @@ services:
       - DB_NAME=btc_db
       - DB_USER=btc_user
       - DB_PASS=btc_pass
+    # Logs appear in console, auto-run disabled to let Airflow trigger it
 
   airflow:
     build: ./airflow
@@ -33,6 +34,7 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://btc_user:btc_pass@postgres/btc_db
       - _AIRFLOW_WWW_USER_USERNAME=airflow
       - _AIRFLOW_WWW_USER_PASSWORD=airflow
+      - PYTHONUNBUFFERED=1
     depends_on:
       postgres:
         condition: service_healthy
@@ -41,10 +43,10 @@ services:
     ports:
       - "8080:8080"
     entrypoint: /bin/bash -c "
-      airflow db migrate &&
-      airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@example.com || true &&
-      airflow scheduler & airflow webserver
-    "
-
+      airflow db check || airflow db init;
+      airflow db upgrade;
+      airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@example.com || true;
+      airflow scheduler & airflow webserver;
+      "
 volumes:
-  pg_data:
+  pg_data: {}

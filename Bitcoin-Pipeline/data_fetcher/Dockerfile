@@ -6,4 +6,7 @@ RUN pip install -r requirements.txt
 
 COPY fetch_binance_ohlc.py .
 
+# Show logs in real-time
+ENV PYTHONUNBUFFERED=1
+
 CMD ["python", "fetch_binance_ohlc.py"]
