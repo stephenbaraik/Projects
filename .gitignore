@@ -3,11 +3,6 @@ venv/
 .venv/
 .venv/
 
-# Environment files
-.env
-.env.*
-*.env
-
 # Jupyter Notebook Checkpoints
 .ipynb_checkpoints/
 
