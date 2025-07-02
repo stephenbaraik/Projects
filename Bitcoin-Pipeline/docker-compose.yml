@@ -9,6 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bitcoinuser"]
       interval: 10s
@@ -30,12 +31,23 @@ services:
     build:
       context: ./airflow
     environment:
-      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://bitcoinuser:bitcoinpass@postgres:5432/bitcoin_db
+      - AIRFLOW__WEBSERVER__RBAC=True
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
     ports:
       - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
+    command: webserver
 
 volumes:
   pgdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./pgdata
+      o: bind
