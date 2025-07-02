@@ -1,0 +1,6 @@
+pandas
+requests
+psycopg2
+tqdm
+apache-airflow==2.8.1
+apache-airflow-providers-docker
