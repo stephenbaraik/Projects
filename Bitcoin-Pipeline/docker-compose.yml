@@ -1,53 +1,159 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres:13
+    container_name: bitcoin_postgres
     environment:
-      POSTGRES_USER: bitcoinuser
-      POSTGRES_PASSWORD: bitcoinpass
-      POSTGRES_DB: bitcoin_db
+      POSTGRES_DB: bitcoin_data
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bitcoinuser"]
+      test: ["CMD-SHELL", "pg_isready -U airflow -d bitcoin_data"]
       interval: 10s
+      timeout: 5s
       retries: 5
+    networks:
+      - bitcoin_network
 
-  fetcher:
-    build:
-      context: ./data_fetcher
-    environment:
-      DB_HOST: postgres
-      DB_NAME: bitcoin_db
-      DB_USER: bitcoinuser
-      DB_PASS: bitcoinpass
-    depends_on:
-      postgres:
-        condition: service_healthy
+  redis:
+    image: redis:7-alpine
+    container_name: bitcoin_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bitcoin_network
 
-  airflow:
-    build:
-      context: ./airflow
+  airflow-webserver:
+    build: ./airflow
+    container_name: bitcoin_airflow_webserver
     environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://bitcoinuser:bitcoinpass@postgres:5432/bitcoin_db
-      - AIRFLOW__WEBSERVER__RBAC=True
-      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CORE__FERNET_KEY=UKMzEm3yIuFYEq1y3-2FxPNWSVwRASpahmQ9kQfEr8Q=
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_USERNAME=admin
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD=admin
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_EMAIL=admin@example.com
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_FIRSTNAME=Admin
+      - AIRFLOW__WEBSERVER__DEFAULT_USER_LASTNAME=User
     volumes:
       - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./data_fetcher:/opt/airflow/data_fetcher
     ports:
       - "8080:8080"
+    command: webserver
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     depends_on:
       postgres:
         condition: service_healthy
-    command: webserver
+      redis:
+        condition: service_healthy
+    networks:
+      - bitcoin_network
+
+  airflow-scheduler:
+    build: ./airflow
+    container_name: bitcoin_airflow_scheduler
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CORE__FERNET_KEY=UKMzEm3yIuFYEq1y3-2FxPNWSVwRASpahmQ9kQfEr8Q=
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./data_fetcher:/opt/airflow/data_fetcher
+    command: scheduler
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - bitcoin_network
+
+  airflow-worker:
+    build: ./airflow
+    container_name: bitcoin_airflow_worker
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CORE__FERNET_KEY=UKMzEm3yIuFYEq1y3-2FxPNWSVwRASpahmQ9kQfEr8Q=
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./data_fetcher:/opt/airflow/data_fetcher
+    command: celery worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - bitcoin_network
+
+  airflow-init:
+    build: ./airflow
+    container_name: bitcoin_airflow_init
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres:5432/bitcoin_data
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CORE__FERNET_KEY=UKMzEm3yIuFYEq1y3-2FxPNWSVwRASpahmQ9kQfEr8Q=
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    command: |
+      bash -c "
+        airflow db init &&
+        airflow users create \
+          --username admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com \
+          --password admin
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bitcoin_network
 
 volumes:
-  pgdata:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./pgdata
-      o: bind
+  postgres_data:
+
+networks:
+  bitcoin_network:
+    driver: bridge
