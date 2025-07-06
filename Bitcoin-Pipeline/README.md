@@ -90,22 +90,23 @@ Configure the pipeline through Airflow Variables:
 Set these in your environment or `.env` file:
 
 ```bash
-# Database Configuration
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_DB=bitcoin_data
+# Airflow
+AIRFLOW_UID=50000
+AIRFLOW__WEBSERVER__SECRET_KEY=this_is_a_secret_123
+# Postgres
 POSTGRES_USER=airflow
 POSTGRES_PASSWORD=airflow
+POSTGRES_DB=airflow
+
+# PgAdmin
+PGADMIN_DEFAULT_EMAIL=admin@admin.com
+PGADMIN_DEFAULT_PASSWORD=admin
 
 # Data Fetcher Configuration
 SYMBOLS=BTCUSDT,ETHUSDT,ADAUSDT
 TIMEFRAMES=1h,4h,1d
 LIMIT=1000
 BACKFILL_HOURS=24
-
-# Airflow Configuration
-AIRFLOW__CORE__EXECUTOR=CeleryExecutor
-AIRFLOW__CORE__LOAD_EXAMPLES=false
 ```
 
 ## 📊 Database Schema
