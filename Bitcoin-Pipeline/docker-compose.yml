@@ -1,59 +1,69 @@
 services:
+
   postgres:
-    image: postgres:14
+    image: postgres:15
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-      - ./init/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 5s
-      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - airflow_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    networks:
+      - airflow_net
+    depends_on:
+      - postgres
+
+  airflow-init:
+    image: apache/airflow:2.9.0
+    environment:
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+    user: "${AIRFLOW_UID}:0"
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
+    depends_on:
+      - postgres
+    networks:
+      - airflow_net
 
   airflow-webserver:
-    image: apache/airflow:2.9.0-python3.11
+    image: apache/airflow:2.9.0
     environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
-      - _AIRFLOW_WWW_USER_USERNAME=airflow
-      - _AIRFLOW_WWW_USER_PASSWORD=airflow
-      - PYTHONUNBUFFERED=1
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
     ports:
       - "8080:8080"
-    command: bash -c "airflow db migrate && airflow db upgrade && airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@example.com && exec airflow webserver"
+    command: webserver
+    depends_on:
+      - airflow-init
+    networks:
+      - airflow_net
 
   airflow-scheduler:
-    image: apache/airflow:2.9.0-python3.11
+    image: apache/airflow:2.9.0
     environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
-      - PYTHONUNBUFFERED=1
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+    command: scheduler
     depends_on:
       - airflow-webserver
-    volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
-    command: bash -c "airflow db migrate && exec airflow scheduler"
-
-  data_fetcher:
-    build: ./data_fetcher
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      - DB_HOST=postgres
-      - DB_NAME=${POSTGRES_DB}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASS=${POSTGRES_PASSWORD}
-
-volumes:
-  pg_data: {}
+    networks:
+      - airflow_net
