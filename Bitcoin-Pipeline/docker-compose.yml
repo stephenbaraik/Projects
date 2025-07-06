@@ -32,12 +32,13 @@ services:
       - _AIRFLOW_WWW_USER_PASSWORD=admin
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
     user: "${AIRFLOW_UID}:0"
     entrypoint: /bin/bash
     command:
       - -c
       - |
-        airflow db migrate
+        airflow db upgrade
         airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
     depends_on:
       - postgres
@@ -49,9 +50,12 @@ services:
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
     ports:
       - "8080:8080"
     command: webserver
+    volumes:
+      - ./dags:/opt/airflow/dags
     depends_on:
       - airflow-init
     networks:
@@ -62,8 +66,17 @@ services:
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+      - AIRFLOW__WEBSERVER__SECRET_KEY=${AIRFLOW__WEBSERVER__SECRET_KEY}
     command: scheduler
+    volumes:
+      - ./dags:/opt/airflow/dags
     depends_on:
       - airflow-webserver
     networks:
       - airflow_net
+
+volumes:
+  postgres_data:
+
+networks:
+  airflow_net:
