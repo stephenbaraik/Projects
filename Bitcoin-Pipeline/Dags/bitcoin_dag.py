@@ -3,14 +3,11 @@ from airflow.operators.python import PythonOperator
 from airflow.hooks.postgres_hook import PostgresHook
 from datetime import datetime
 import requests
-import time
 
 default_args = {
     'start_date': datetime(2024, 1, 1),
 }
 
-# Coingecko OHLC API only supports "1, 7, 14, 30, 90, 180, 365, max" days
-# We'll use 'max' to pull entire history once
 def fetch_historical_ohlc():
     url = "https://api.coingecko.com/api/v3/coins/bitcoin/ohlc?vs_currency=usd&days=max"
     response = requests.get(url)
@@ -31,7 +28,7 @@ def fetch_historical_ohlc():
     """)
 
     for entry in data:
-        timestamp = datetime.utcfromtimestamp(entry[0] / 1000)
+        timestamp = datetime.utcfromtimestamp(float(entry[0]) / 1000)
         open_price = entry[1]
         high_price = entry[2]
         low_price = entry[3]
@@ -46,7 +43,7 @@ def fetch_historical_ohlc():
     conn.commit()
     cursor.close()
     conn.close()
-    print(f"Historical OHLC data inserted: {len(data)} records")
+    print(f"Inserted {len(data)} historical OHLC records.")
 
 
 def fetch_latest_ohlc():
@@ -55,7 +52,7 @@ def fetch_latest_ohlc():
     data = response.json()
 
     latest_entry = data[-1]  # Latest OHLC data
-    timestamp = datetime.utcfromtimestamp(latest_entry[0] / 1000)
+    timestamp = datetime.utcfromtimestamp(float(latest_entry[0]) / 1000)
     open_price = latest_entry[1]
     high_price = latest_entry[2]
     low_price = latest_entry[3]
@@ -77,9 +74,8 @@ def fetch_latest_ohlc():
     print(f"Latest OHLC inserted: {timestamp} | O:{open_price}, H:{high_price}, L:{low_price}, C:{close_price}")
 
 
-
 with DAG(
-    "bitcoin_ohlc_full_pipeline",
+    dag_id="bitcoin_ohlc_full_pipeline",
     schedule_interval="* * * * *",  # Every minute
     default_args=default_args,
     catchup=False
@@ -95,5 +91,4 @@ with DAG(
         python_callable=fetch_latest_ohlc
     )
 
-    # Historical data runs first only once (use Airflow's UI to disable after first run)
     historical_task >> realtime_task
