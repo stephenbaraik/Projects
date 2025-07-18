@@ -1,2 +1,2 @@
-date_range,total_days,instruments,completeness,oil_correlation
-2015-01-02 00:00:00 to 2024-12-30 00:00:00,2128,7,100.0,0.9894550908331672
+date_range,total_days,instruments,completeness,oil_correlation_usd,oil_correlation_inr,avg_usd_inr_rate
+2015-01-02 00:00:00 to 2024-12-30 00:00:00,2125,12,100.0,0.9894704446078187,0.9934383196477815,73.56776254811007
