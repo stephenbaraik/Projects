@@ -18,3 +18,5 @@ __pycache__/
 # Data files
 *.sqlite
 *.db
+*.csv
+*.json
