@@ -1,4 +1,3 @@
-```markdown
 # 🛍️ Retail Analytics with Hadoop & Pig
 
 > A comprehensive big data analytics solution for retail transaction processing and insights generation
@@ -292,4 +291,3 @@ For questions and support:
 [⭐ Star this repo](https://github.com/yourorg/retail-analytics) | [🍴 Fork it](https://github.com/yourorg/retail-analytics/fork) | [📝 Report Issues](https://github.com/yourorg/retail-analytics/issues)
 
 </div>
-```
