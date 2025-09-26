@@ -1,0 +1,29 @@
+# Core scientific stack
+numpy
+scipy
+pandas
+matplotlib
+seaborn
+
+# Machine learning & unsupervised learning
+scikit-learn
+scikit-learn-extra   # extra clustering (k-medoids, constrained k-means, etc.)
+scipy
+umap-learn           # dimensionality reduction (t-SNE alternative)
+hdbscan              # density-based clustering
+
+# Recommender systems
+scikit-surprise      # collaborative filtering / recommendation
+
+# Data handling
+pyarrow              # parquet/arrow support
+openpyxl             # Excel support
+
+# Model persistence & utilities
+joblib
+tqdm                 # progress bars
+
+# Jupyter / notebooks
+jupyterlab
+notebook
+ipython
