@@ -365,6 +365,193 @@ sns.heatmap(vol_spill.astype(float), annot=True, fmt=".2f", ax=ax)
 ax.set_title("Volatility spillover proxy (corr of squared standardized residuals)")
 savefig(fig, "volatility_spillover_heatmap.png")
 
+# ---------------- Comprehensive Volatility Analysis ----------------
+print("Performing comprehensive volatility analysis with descriptive statistics...")
+
+# 1. Historical Volatility (annualized)
+hist_vol = ret_m.std() * np.sqrt(12)  # annualized
+hist_vol_df = pd.DataFrame({
+    'Annualized_Volatility': hist_vol,
+    'Monthly_Volatility': ret_m.std()
+})
+
+# 2. Realized Volatility (rolling windows)
+windows = [6, 12, 24, 36]  # months
+realized_vol = {}
+for window in windows:
+    realized_vol[f'{window}m'] = ret_m.rolling(window).std() * np.sqrt(12)
+
+# 3. Volatility Descriptive Statistics
+vol_stats = {}
+for col in ret_m.columns:
+    vol_series = ret_m[col].rolling(12).std() * np.sqrt(12)
+    vol_stats[col] = {
+        'mean_vol': vol_series.mean(),
+        'median_vol': vol_series.median(),
+        'std_vol': vol_series.std(),
+        'min_vol': vol_series.min(),
+        'max_vol': vol_series.max(),
+        'q25_vol': vol_series.quantile(0.25),
+        'q75_vol': vol_series.quantile(0.75),
+        'skewness_vol': vol_series.skew(),
+        'kurtosis_vol': vol_series.kurtosis(),
+        'cv_vol': vol_series.std() / vol_series.mean() if vol_series.mean() != 0 else np.nan
+    }
+
+vol_stats_df = pd.DataFrame(vol_stats).T
+vol_stats_df = pd.concat([hist_vol_df, vol_stats_df], axis=1)
+vol_stats_df.to_csv(OUT / "volatility_descriptive_stats.csv")
+print("Saved volatility_descriptive_stats.csv")
+
+# 4. Volatility percentiles and extreme events
+vol_percentiles = {}
+for col in ret_m.columns:
+    vol_series = ret_m[col].rolling(12).std() * np.sqrt(12)
+    vol_percentiles[col] = {
+        'p1': vol_series.quantile(0.01),
+        'p5': vol_series.quantile(0.05),
+        'p10': vol_series.quantile(0.10),
+        'p25': vol_series.quantile(0.25),
+        'p50': vol_series.quantile(0.50),
+        'p75': vol_series.quantile(0.75),
+        'p90': vol_series.quantile(0.90),
+        'p95': vol_series.quantile(0.95),
+        'p99': vol_series.quantile(0.99)
+    }
+
+vol_percentiles_df = pd.DataFrame(vol_percentiles).T
+vol_percentiles_df.to_csv(OUT / "volatility_percentiles.csv")
+print("Saved volatility_percentiles.csv")
+
+# 5. Volatility comparison across assets
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Plot 1: Historical volatility comparison (bar chart)
+ax = axes[0, 0]
+hist_vol_df['Annualized_Volatility'].sort_values().plot(kind='barh', ax=ax, color='steelblue')
+ax.set_title('Historical Annualized Volatility by Asset')
+ax.set_xlabel('Annualized Volatility')
+ax.grid(axis='x', alpha=0.3)
+
+# Plot 2: Volatility distribution (box plot)
+ax = axes[0, 1]
+vol_data_for_box = []
+vol_labels = []
+for col in ret_m.columns:
+    vol_series = ret_m[col].rolling(12).std().dropna() * np.sqrt(12)
+    if len(vol_series) > 0:
+        vol_data_for_box.append(vol_series.values)
+        vol_labels.append(col)
+if vol_data_for_box:
+    ax.boxplot(vol_data_for_box, labels=vol_labels, vert=True)
+    ax.set_title('Distribution of Rolling 12M Volatility')
+    ax.set_ylabel('Annualized Volatility')
+    ax.tick_params(axis='x', rotation=45)
+    ax.grid(axis='y', alpha=0.3)
+
+# Plot 3: Volatility time series (multiple windows)
+ax = axes[1, 0]
+for window in [6, 12, 24]:
+    vol_6m = ret_m[CONFIG["brent_ticker"]].rolling(window).std() * np.sqrt(12)
+    vol_6m.plot(ax=ax, label=f'{window}M rolling', alpha=0.7)
+ax.set_title(f'{CONFIG["brent_ticker"]} Volatility (Different Windows)')
+ax.set_ylabel('Annualized Volatility')
+ax.legend()
+ax.grid(alpha=0.3)
+
+# Plot 4: Volatility regime identification (high/low)
+ax = axes[1, 1]
+brent_vol = ret_m[CONFIG["brent_ticker"]].rolling(12).std() * np.sqrt(12)
+vol_median = brent_vol.median()
+high_vol_periods = brent_vol > vol_median
+ax.fill_between(brent_vol.index, 0, 1, where=high_vol_periods, 
+                 transform=ax.get_xaxis_transform(), alpha=0.3, 
+                 color='red', label='High Vol Regime')
+brent_vol.plot(ax=ax, color='navy', linewidth=1.5)
+ax.axhline(y=vol_median, color='red', linestyle='--', 
+           label=f'Median Vol: {vol_median:.3f}')
+ax.set_title(f'{CONFIG["brent_ticker"]} Volatility Regimes')
+ax.set_ylabel('Annualized Volatility')
+ax.legend()
+ax.grid(alpha=0.3)
+
+plt.tight_layout()
+savefig(fig, "volatility_comprehensive_analysis.png")
+
+# 6. Volatility clustering analysis (ARCH effects)
+print("Testing for ARCH effects (volatility clustering)...")
+arch_test_results = {}
+from statsmodels.stats.diagnostic import het_arch
+for col in ret_m.columns:
+    series = ret_m[col].dropna()
+    if len(series) > 20:
+        try:
+            # ARCH test with lag 12
+            lm_stat, lm_pval, f_stat, f_pval = het_arch(series, nlags=12)
+            arch_test_results[col] = {
+                'LM_statistic': lm_stat,
+                'LM_pvalue': lm_pval,
+                'F_statistic': f_stat,
+                'F_pvalue': f_pval,
+                'arch_effect': 'Yes' if lm_pval < 0.05 else 'No'
+            }
+        except Exception as e:
+            arch_test_results[col] = {'error': str(e)}
+    else:
+        arch_test_results[col] = {'error': 'Insufficient data'}
+
+arch_test_df = pd.DataFrame(arch_test_results).T
+arch_test_df.to_csv(OUT / "arch_effects_test.csv")
+print("Saved arch_effects_test.csv")
+
+# 7. Volatility persistence (autocorrelation of squared returns)
+print("Analyzing volatility persistence...")
+vol_persistence = {}
+for col in ret_m.columns:
+    sq_returns = ret_m[col].dropna() ** 2
+    if len(sq_returns) > 20:
+        acf_vals = []
+        for lag in [1, 3, 6, 12]:
+            if len(sq_returns) > lag:
+                acf_val = sq_returns.autocorr(lag=lag)
+                acf_vals.append(acf_val)
+            else:
+                acf_vals.append(np.nan)
+        vol_persistence[col] = {
+            'acf_lag1': acf_vals[0],
+            'acf_lag3': acf_vals[1],
+            'acf_lag6': acf_vals[2],
+            'acf_lag12': acf_vals[3]
+        }
+    else:
+        vol_persistence[col] = {
+            'acf_lag1': np.nan,
+            'acf_lag3': np.nan,
+            'acf_lag6': np.nan,
+            'acf_lag12': np.nan
+        }
+
+vol_persistence_df = pd.DataFrame(vol_persistence).T
+vol_persistence_df.to_csv(OUT / "volatility_persistence.csv")
+print("Saved volatility_persistence.csv")
+
+# 8. Volatility summary table for paper
+volatility_summary = pd.DataFrame({
+    'Mean': ret_m.std() * np.sqrt(12),
+    'Median': [ret_m[col].rolling(12).std().median() * np.sqrt(12) for col in ret_m.columns],
+    'Min': [ret_m[col].rolling(12).std().min() * np.sqrt(12) for col in ret_m.columns],
+    'Max': [ret_m[col].rolling(12).std().max() * np.sqrt(12) for col in ret_m.columns],
+    'Std': [ret_m[col].rolling(12).std().std() * np.sqrt(12) for col in ret_m.columns],
+    'CV': [(ret_m[col].rolling(12).std().std() / ret_m[col].rolling(12).std().mean()) 
+           if ret_m[col].rolling(12).std().mean() != 0 else np.nan 
+           for col in ret_m.columns]
+}, index=ret_m.columns)
+
+volatility_summary.to_csv(OUT / "volatility_summary_table.csv")
+print("Saved volatility_summary_table.csv")
+
+print("Volatility analysis complete. Generated 7 tables and comprehensive visualizations.")
+
 # ---------------- PCA / Factor modelling ----------------
 print("Running PCA on returns...")
 ret_clean = ret_m.dropna()
