@@ -9,7 +9,6 @@ Dependencies: pandas, numpy, yfinance, matplotlib, seaborn, statsmodels, arch, s
 """
 
 from pathlib import Path
-import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -99,18 +98,55 @@ def kpss_res(series, reg="c"):
 print("Downloading data...")
 tickers = [CONFIG["brent_ticker"]] + list(CONFIG["stocks"].keys())
 raw = yf.download(tickers, start=CONFIG["start_date"], end=CONFIG["end_date"], progress=False)
+
+# Handle multi-index or single column case
 if "Close" in raw.columns and isinstance(raw.columns, pd.MultiIndex):
     close = raw["Close"].copy()
 else:
-    close = raw[["Close"]].copy()
-# rename stocks to short names
+    close = raw[["Close"]].copy() if isinstance(raw.columns, pd.MultiIndex) else raw.copy()
+
+# Check which tickers actually have data
+available_tickers = []
+if isinstance(close, pd.Series):
+    close = close.to_frame(name=CONFIG["brent_ticker"])
+    
+for ticker in tickers:
+    if ticker in close.columns:
+        # Check if the column has any non-null data
+        if close[ticker].notna().sum() > 0:
+            available_tickers.append(ticker)
+        else:
+            print(f"Warning: {ticker} has no valid data, excluding from analysis.")
+    else:
+        print(f"Warning: {ticker} not found in downloaded data, excluding from analysis.")
+
+# Ensure Brent is available
+if CONFIG["brent_ticker"] not in available_tickers:
+    raise RuntimeError("Brent ticker missing or has no valid data.")
+
+# Filter to only available tickers
+close = close[available_tickers].copy()
+
+# Rename stocks to short names
 rename_map = {k: v for k, v in CONFIG["stocks"].items() if k in close.columns}
 close = close.rename(columns=rename_map)
-if CONFIG["brent_ticker"] not in close.columns:
-    raise RuntimeError("Brent ticker missing from downloaded data.")
-cols = [CONFIG["brent_ticker"]] + [c for c in close.columns if c != CONFIG["brent_ticker"]]
-close = close[cols].dropna(how="all").sort_index()
+
+# Reorder columns to have Brent first
+brent_col = CONFIG["brent_ticker"]
+other_cols = [c for c in close.columns if c != brent_col]
+close = close[[brent_col] + other_cols]
+
+# Remove rows where all values are NaN
+close = close.dropna(how="all").sort_index()
+
+# Monthly aggregation
 prices_m = close.resample(CONFIG["agg"]).last().dropna(how="all")
+
+# Remove any columns that became all NaN after resampling
+prices_m = prices_m.dropna(axis=1, how="all")
+
+print(f"Analysis will use: {CONFIG['brent_ticker']} and {len(prices_m.columns)-1} stocks: {list(prices_m.columns[1:])}")
+
 logp_m = np.log(prices_m)
 ret_m = logp_m.diff().dropna()
 
@@ -155,24 +191,34 @@ rolling_window = 12
 rolling_corrs = {c: ret_m[CONFIG["brent_ticker"]].rolling(rolling_window).corr(ret_m[c]) for c in ret_m.columns if c!=CONFIG["brent_ticker"]}
 rolling_corr_df = pd.DataFrame(rolling_corrs)
 rolling_corr_df.to_csv(OUT / "rolling_correlations_12m.csv")
-fig, ax = plt.subplots(figsize=(10,5))
-rolling_corr_df.plot(ax=ax)
-ax.set_title("12-month rolling correlation with Brent")
-savefig(fig, "rolling_corr_with_brent.png")
+# Only plot if we have data
+if not rolling_corr_df.empty and rolling_corr_df.dropna().shape[0] > 0:
+    fig, ax = plt.subplots(figsize=(10,5))
+    rolling_corr_df.plot(ax=ax)
+    ax.set_title("12-month rolling correlation with Brent")
+    savefig(fig, "rolling_corr_with_brent.png")
+else:
+    print("Warning: Insufficient data for rolling correlation plot.")
 
 # Volatility clustering: rolling vol
-fig, ax = plt.subplots(figsize=(10,5))
-(ret_m.rolling(12).std()*np.sqrt(12)).plot(ax=ax)  # annualized approx
-ax.set_title("12-month rolling volatility (annualized approx)")
-savefig(fig, "rolling_volatility_12m.png")
+rolling_vol = ret_m.rolling(12).std()*np.sqrt(12)  # annualized approx
+if not rolling_vol.empty and rolling_vol.dropna().shape[0] > 0:
+    fig, ax = plt.subplots(figsize=(10,5))
+    rolling_vol.plot(ax=ax)
+    ax.set_title("12-month rolling volatility (annualized approx)")
+    savefig(fig, "rolling_volatility_12m.png")
+else:
+    print("Warning: Insufficient data for rolling volatility plot.")
 
 # Cross-correlation function (Brent vs each stock)
-from statsmodels.tsa.stattools import ccf
 lags = 12
 for s in [c for c in ret_m.columns if c!=CONFIG["brent_ticker"]]:
     x = ret_m[CONFIG["brent_ticker"]].dropna()
     y = ret_m[s].dropna()
     minlen = min(len(x), len(y))
+    if minlen < lags + 1:
+        print(f"Warning: Insufficient data for cross-correlation with {s} (need >{lags} obs, have {minlen})")
+        continue
     x,y = x[-minlen:], y[-minlen:]
     c = [x.corr(y.shift(l)) for l in range(-lags, lags+1)]
     fig, ax = plt.subplots(figsize=(8,3))
@@ -222,7 +268,7 @@ ret_dropna = ret_m.dropna()
 if rank >= 1:
     vecm = VECM(levels, k_ar_diff=1+2, coint_rank=rank, deterministic="co")
     vecm_res = vecm.fit()
-    txt = vecm_res.summary().as_text()
+    txt = str(vecm_res.summary())
     (OUT / "vecm_summary.txt").write_text(txt)
     models_info["model"] = "VECM"
     models_info["summary_file"] = "vecm_summary.txt"
@@ -234,24 +280,36 @@ if rank >= 1:
         (OUT / "vecm_irf_unavailable.txt").write_text("IRF method unavailable for VECM with this statsmodels version.")
 else:
     # VAR on returns
-    sel = VAR(ret_dropna).select_order(maxlags=CONFIG["max_granger_lags"])
-    chosen = sel.aic if sel.aic is not None else sel.bic if sel.bic is not None else 1
-    var = VAR(ret_dropna)
-    var_res = var.fit(maxlags=chosen)
-    (OUT / "var_summary.txt").write_text(var_res.summary().as_text())
-    models_info["model"] = "VAR"
-    models_info["lag_order"] = var_res.k_ar
-    # IRFs
-    irf = var_res.irf(24)
-    # Save IRF plots for responses of stocks to Brent shock
-    for resp_col in [c for c in ret_dropna.columns if c!=CONFIG["brent_ticker"]]:
-        fig = irf.plot(orth=False, impulse=CONFIG["brent_ticker"], response=resp_col)
-        # statsmodels returns a matplotlib Figure list sometimes; handle both
+    try:
+        sel = VAR(ret_dropna).select_order(maxlags=CONFIG["max_granger_lags"])
+        chosen = sel.aic if sel.aic is not None else sel.bic if sel.bic is not None else 2
+        chosen = max(1, chosen)  # ensure at least lag 1
+        var = VAR(ret_dropna)
+        var_res = var.fit(maxlags=chosen)
+        (OUT / "var_summary.txt").write_text(str(var_res.summary()))
+        models_info["model"] = "VAR"
+        models_info["lag_order"] = var_res.k_ar
+        # IRFs
         try:
-            savefig(fig[0], f"irf_{resp_col}_to_brent.png")
-        except Exception:
-            # if fig is a single Figure:
-            savefig(fig, f"irf_{resp_col}_to_brent.png")
+            irf = var_res.irf(24)
+            # Save IRF plots for responses of stocks to Brent shock
+            for resp_col in [c for c in ret_dropna.columns if c!=CONFIG["brent_ticker"]]:
+                try:
+                    fig = irf.plot(orth=False, impulse=CONFIG["brent_ticker"], response=resp_col)
+                    # statsmodels returns a matplotlib Figure list sometimes; handle both
+                    if isinstance(fig, list):
+                        savefig(fig[0], f"irf_{resp_col}_to_brent.png")
+                    else:
+                        savefig(fig, f"irf_{resp_col}_to_brent.png")
+                except Exception as e:
+                    print(f"Warning: Could not plot IRF for {resp_col}: {e}")
+        except Exception as e:
+            print(f"Warning: Could not compute IRFs: {e}")
+            (OUT / "irf_unavailable.txt").write_text(f"IRF computation failed: {str(e)}")
+    except Exception as e:
+        print(f"Warning: VAR model fitting failed: {e}")
+        (OUT / "var_error.txt").write_text(f"VAR fitting failed: {str(e)}")
+        models_info["model"] = "None (VAR failed)"
 
 print("Saved VAR/VECM outputs.")
 
@@ -368,21 +426,32 @@ scenarios = {
 relations = {}
 for s in [c for c in ret_m.columns if c!=CONFIG["brent_ticker"]]:
     df = pd.concat([ret_m[s], brent_ret], axis=1).dropna()
+    if len(df) < 10:
+        print(f"Warning: Insufficient data for regression with {s} (need >10 obs, have {len(df)})")
+        continue
     mdl = OLS(df[s], add_constant(df[CONFIG["brent_ticker"]])).fit()
     relations[s] = {"alpha": float(mdl.params[0]), "beta": float(mdl.params[1]), "sigma_eps": float(mdl.resid.std(ddof=1)), "r2": float(mdl.rsquared)}
-pd.DataFrame(relations).T.to_csv(OUT / "stock_brent_monthly_regression.csv")
+if relations:
+    pd.DataFrame(relations).T.to_csv(OUT / "stock_brent_monthly_regression.csv")
+else:
+    print("Warning: No valid stock-Brent regressions computed.")
 
 # Storage
 sim_month_index = pd.date_range(start=prices_m.index[-1] + pd.DateOffset(months=1), periods=h, freq="M")
 scenario_outputs = {}
-for scen_name, scen in scenarios.items():
-    mu_s, sigma_s = scen["mu"], scen["sigma"]
-    # arrays: (n_sims, h+1)
-    brent_paths = np.zeros((n, h+1))
-    stock_paths = {s: np.zeros((n, h+1)) for s in relations}
-    brent_paths[:,0] = last_price[CONFIG["brent_ticker"]]
-    for s in relations:
-        stock_paths[s][:,0] = last_price[s]
+
+# Check if we have any valid relations
+if not relations:
+    print("Warning: No stock relations available for scenario analysis. Skipping Monte Carlo.")
+else:
+    for scen_name, scen in scenarios.items():
+        mu_s, sigma_s = scen["mu"], scen["sigma"]
+        # arrays: (n_sims, h+1)
+        brent_paths = np.zeros((n, h+1))
+        stock_paths = {s: np.zeros((n, h+1)) for s in relations}
+        brent_paths[:,0] = last_price[CONFIG["brent_ticker"]]
+        for s in relations:
+            stock_paths[s][:,0] = last_price[s]
     # simulate
     for sim in range(n):
         for t in range(1, h+1):
@@ -424,60 +493,66 @@ for scen_name, scen in scenarios.items():
     np.savez_compressed(OUT / f"sim_brent_{scen_name}.npz", arr=brent_paths)
     for s in stock_paths:
         np.savez_compressed(OUT / f"sim_{s}_{scen_name}.npz", arr=stock_paths[s])
-    scenario_outputs[scen_name] = {"percentiles": percentiles, "brent_paths_file": f"sim_brent_{scen_name}.npz"}
-    print(f"Scenario {scen_name}: saved percentiles and sim files.")
+        scenario_outputs[scen_name] = {"percentiles": percentiles, "brent_paths_file": f"sim_brent_{scen_name}.npz"}
+        print(f"Scenario {scen_name}: saved percentiles and sim files.")
 
 # Plot fan charts (Brent + up to top N stocks) for each scenario
-print("Creating fan charts for scenarios...")
-for scen_name, out in scenario_outputs.items():
-    # Brent
-    perc = out["percentiles"]["Brent"]
-    fig, ax = plt.subplots(figsize=(9,5))
-    x = perc.index
-    ax.plot(x, perc["p50"], label="median")
-    ax.fill_between(x, perc["p5"], perc["p95"], alpha=0.2, label="5-95")
-    ax.fill_between(x, perc["p25"], perc["p75"], alpha=0.3, label="25-75")
-    ax.set_title(f"Brent simulated fan chart: {scen_name}")
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Price")
-    ax.legend()
-    savefig(fig, f"fan_brent_{scen_name}.png")
-    # stocks: choose up to plot_top_n
-    stocks_to_plot = list(relations.keys())[:CONFIG["plot_top_n"]]
-    for s in stocks_to_plot:
-        perc_s = out["percentiles"][s]
+if scenario_outputs:
+    print("Creating fan charts for scenarios...")
+    for scen_name, out in scenario_outputs.items():
+        # Brent
+        perc = out["percentiles"]["Brent"]
         fig, ax = plt.subplots(figsize=(9,5))
-        x = perc_s.index
-        ax.plot(x, perc_s["p50"], label="median")
-        ax.fill_between(x, perc_s["p5"], perc_s["p95"], alpha=0.2)
-        ax.fill_between(x, perc_s["p25"], perc_s["p75"], alpha=0.3)
-        ax.set_title(f"{s} simulated fan chart: {scen_name}")
-        ax.set_xlabel("Date")
+        x = range(len(perc))  # Use numeric index for x-axis
+        ax.plot(x, perc["p50"].values, label="median")
+        ax.fill_between(x, perc["p5"].values, perc["p95"].values, alpha=0.2, label="5-95")
+        ax.fill_between(x, perc["p25"].values, perc["p75"].values, alpha=0.3, label="25-75")
+        ax.set_title(f"Brent simulated fan chart: {scen_name}")
+        ax.set_xlabel("Months ahead")
         ax.set_ylabel("Price")
-        savefig(fig, f"fan_{s}_{scen_name}.png")
+        ax.legend()
+        savefig(fig, f"fan_brent_{scen_name}.png")
+        # stocks: choose up to plot_top_n
+        stocks_to_plot = list(relations.keys())[:CONFIG["plot_top_n"]]
+        for s in stocks_to_plot:
+            perc_s = out["percentiles"][s]
+            fig, ax = plt.subplots(figsize=(9,5))
+            x = range(len(perc_s))  # Use numeric index for x-axis
+            ax.plot(x, perc_s["p50"].values, label="median")
+            ax.fill_between(x, perc_s["p5"].values, perc_s["p95"].values, alpha=0.2)
+            ax.fill_between(x, perc_s["p25"].values, perc_s["p75"].values, alpha=0.3)
+            ax.set_title(f"{s} simulated fan chart: {scen_name}")
+            ax.set_xlabel("Months ahead")
+            ax.set_ylabel("Price")
+            savefig(fig, f"fan_{s}_{scen_name}.png")
 
-print("Scenario fan charts saved. All scenario CSVs and sim arrays saved.")
+    print("Scenario fan charts saved. All scenario CSVs and sim arrays saved.")
+else:
+    print("No scenario outputs generated.")
 
 # ---------------- Final summary table compilation ----------------
-print("Compiling final summary tables for paper...")
-summary_rows = []
-for scen_name, out in scenario_outputs.items():
-    for instr, perc_df in out["percentiles"].items():
-        end = perc_df.iloc[-1]
-        cagr_median = ((end["p50"]/last_price[instr if instr!="Brent" else CONFIG["brent_ticker"]]) ** (1.0/(CONFIG["horizon_months"]/12.0)) - 1.0)
-        summary_rows.append({
-            "scenario": scen_name,
-            "instrument": instr,
-            "p5_end": end["p5"],
-            "p25_end": end["p25"],
-            "p50_end": end["p50"],
-            "p75_end": end["p75"],
-            "p95_end": end["p95"],
-            "median_annualized_cagr": cagr_median
-        })
-summary_df = pd.DataFrame(summary_rows)
-summary_df.to_csv(OUT / "scenario_end_summary_table.csv", index=False)
-print("Saved scenario_end_summary_table.csv")
+if scenario_outputs:
+    print("Compiling final summary tables for paper...")
+    summary_rows = []
+    for scen_name, out in scenario_outputs.items():
+        for instr, perc_df in out["percentiles"].items():
+            end = perc_df.iloc[-1]
+            cagr_median = ((end["p50"]/last_price[instr if instr!="Brent" else CONFIG["brent_ticker"]]) ** (1.0/(CONFIG["horizon_months"]/12.0)) - 1.0)
+            summary_rows.append({
+                "scenario": scen_name,
+                "instrument": instr,
+                "p5_end": end["p5"],
+                "p25_end": end["p25"],
+                "p50_end": end["p50"],
+                "p75_end": end["p75"],
+                "p95_end": end["p95"],
+                "median_annualized_cagr": cagr_median
+            })
+    summary_df = pd.DataFrame(summary_rows)
+    summary_df.to_csv(OUT / "scenario_end_summary_table.csv", index=False)
+    print("Saved scenario_end_summary_table.csv")
+else:
+    print("No scenario summary to compile.")
 
 print(f"\nAll outputs (CSVs, PNGs, npz sim files) are in: {OUT.resolve()}")
 print("Open the CSVs and PNGs and paste into your paper. If you want a notebook version with inline plots, I can convert this script to a notebook.")
