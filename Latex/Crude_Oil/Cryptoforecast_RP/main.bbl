@@ -1,0 +1,903 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{ynt/apasortcite//global/global}
+    \entry{liaw2002}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=e05a8b150c46a7690aa6d2fef9950ac3}{%
+           family={Liaw},
+           familyi={L\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b0aa143aedbce4568e685eb28d076e4b}{%
+           family={Wiener},
+           familyi={W\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{fullhash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{bibnamehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{authorbibnamehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{authornamehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{authorfullhash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{R News}
+      \field{number}{3}
+      \field{title}{Classification and regression by random forest}
+      \field{volume}{2}
+      \field{year}{2002}
+      \field{pages}{18\bibrangedash 22}
+      \range{pages}{5}
+    \endentry
+    \entry{zhang2003}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=6a20c64ab4f199a4701fa536340d6e76}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={G.\bibnamedelimi P.},
+           giveni={G\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{fullhash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{bibnamehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{authorbibnamehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{authornamehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{authorfullhash}{6a20c64ab4f199a4701fa536340d6e76}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neurocomputing}
+      \field{title}{Time series forecasting using a hybrid ARIMA and neural network model}
+      \field{volume}{50}
+      \field{year}{2003}
+      \field{pages}{159\bibrangedash 175}
+      \range{pages}{17}
+    \endentry
+    \entry{hamzacebi2009}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=b215c0c577641bee027a2d4ec6e7b27c}{%
+           family={Hamzaçebi},
+           familyi={H\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e244fa2159fbb9838f208e1b1a8c8f1c}{%
+           family={Akay},
+           familyi={A\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2142df5e5b4899699db439a3fd20d657}{%
+           family={Kutay},
+           familyi={K\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{0ce2d2be833a6da429582a8444595a72}
+      \strng{fullhash}{039e9311171f1cc067f24f2ff89c5e10}
+      \strng{bibnamehash}{039e9311171f1cc067f24f2ff89c5e10}
+      \strng{authorbibnamehash}{039e9311171f1cc067f24f2ff89c5e10}
+      \strng{authornamehash}{0ce2d2be833a6da429582a8444595a72}
+      \strng{authorfullhash}{039e9311171f1cc067f24f2ff89c5e10}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Expert Systems with Applications}
+      \field{number}{2}
+      \field{title}{Comparison of direct and iterative artificial neural network forecast approaches in multi-periodic time series forecasting}
+      \field{volume}{36}
+      \field{year}{2009}
+      \field{pages}{3839\bibrangedash 3844}
+      \range{pages}{6}
+    \endentry
+    \entry{marsland2014}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=7c683ae801a359de5234eeee714ee0d6}{%
+           family={Marsland},
+           familyi={M\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{2}{%
+        {Chapman}%
+        {Hall/CRC}%
+      }
+      \strng{namehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{fullhash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{bibnamehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{authorbibnamehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{authornamehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{authorfullhash}{7c683ae801a359de5234eeee714ee0d6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2nd}
+      \field{note}{Accessed: 2024-10-19}
+      \field{title}{Machine learning: An algorithmic perspective}
+      \field{year}{2014}
+      \verb{urlraw}
+      \verb http://14.139.161.31/OldFiles/Machine_Learning_An_Algorithmic_Perspective_(2nd_ed).pdf
+      \endverb
+      \verb{url}
+      \verb http://14.139.161.31/OldFiles/Machine_Learning_An_Algorithmic_Perspective_(2nd_ed).pdf
+      \endverb
+    \endentry
+    \entry{murkute2015}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=d5d14735bb9e4406ae6f4bcc0d469f2a}{%
+           family={Murkute},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b908bd99c13e7681cbf4b771d039d7dc}{%
+           family={Sarode},
+           familyi={S\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{fullhash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{bibnamehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{authorbibnamehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{authornamehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{authorfullhash}{e7e16b66c483fd2a8284403643e757aa}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Computer Applications}
+      \field{number}{12}
+      \field{title}{Forecasting market price of stock using artificial neural network}
+      \field{volume}{124}
+      \field{year}{2015}
+      \field{pages}{11\bibrangedash 15}
+      \range{pages}{5}
+    \endentry
+    \entry{koch2021}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=6fd2d4e8d1de310fd14e33a3b8f05392}{%
+           family={Koch},
+           familyi={K\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Packt Publishing}%
+      }
+      \strng{namehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{fullhash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{bibnamehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{authorbibnamehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{authornamehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{authorfullhash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2024-10-19}
+      \field{title}{Machine learning with LightGBM and Python}
+      \field{year}{2021}
+      \verb{urlraw}
+      \verb https://www.packtpub.com/en-us/product/machine-learning-with-lightgbm-and-python-9781800564749
+      \endverb
+      \verb{url}
+      \verb https://www.packtpub.com/en-us/product/machine-learning-with-lightgbm-and-python-9781800564749
+      \endverb
+    \endentry
+    \entry{wang2022}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=c8036c92eb308087403a4876f318cba0}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{fullhash}{c8036c92eb308087403a4876f318cba0}
+      \strng{bibnamehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{authorbibnamehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{authornamehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{authorfullhash}{c8036c92eb308087403a4876f318cba0}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Open Journal of Modelling and Simulation}
+      \field{number}{04}
+      \field{title}{Prediction of the technology company’s stock price through the deep learning method}
+      \field{volume}{10}
+      \field{year}{2022}
+      \field{pages}{428\bibrangedash 440}
+      \range{pages}{13}
+      \verb{urlraw}
+      \verb https://doi.org/10.4236/ojmsi.2022.104024
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.4236/ojmsi.2022.104024
+      \endverb
+    \endentry
+    \entry{artificial2023}{book}{}
+      \name{editor}{4}{}{%
+        {{un=0,uniquepart=base,hash=09979b0d960a8d1cb674c7aaf2d05491}{%
+           family={Dagur},
+           familyi={D\bibinitperiod},
+           given={Arvind},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c509a2d6336c6941218176a6164526ff}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={Pawan},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=81a53f4938873adc9b58cdf2a939a3bd}{%
+           family={Mehra},
+           familyi={M\bibinitperiod},
+           given={Dhirendra\bibnamedelima Kumar},
+           giveni={D\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b4bfa6481db45bcef203c20ccd10fc8c}{%
+           family={Shukla},
+           familyi={S\bibinitperiod},
+           given={Karan\bibnamedelima Singh},
+           giveni={K\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{283817aca0c2b43a4cd1ed92238d1ccc}
+      \strng{fullhash}{ef2f42e39664569a17e6f4dbf659027a}
+      \strng{bibnamehash}{ef2f42e39664569a17e6f4dbf659027a}
+      \strng{editorbibnamehash}{ef2f42e39664569a17e6f4dbf659027a}
+      \strng{editornamehash}{283817aca0c2b43a4cd1ed92238d1ccc}
+      \strng{editorfullhash}{ef2f42e39664569a17e6f4dbf659027a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{editor}
+      \field{labeltitlesource}{title}
+      \field{title}{Artificial intelligence, blockchain, computing and security volume 1}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.taylorfrancis.com/books/edit/10.1201/9781003393580/artificial-intelligence-blockchain-computing-security-volume-1-arvind-dagur-pawan-singh-mehra-dhirendra-kumar-shukla-karan-singh
+      \endverb
+      \verb{url}
+      \verb https://www.taylorfrancis.com/books/edit/10.1201/9781003393580/artificial-intelligence-blockchain-computing-security-volume-1-arvind-dagur-pawan-singh-mehra-dhirendra-kumar-shukla-karan-singh
+      \endverb
+    \endentry
+    \entry{pandey2023}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=83f15ee55e6e832a701b631344d1ab77}{%
+           family={Pandey},
+           familyi={P\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9843b981a347092faf6faad9f1b9bcdd}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9843b981a347092faf6faad9f1b9bcdd}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{3a5375b01cf6cca22483e21619e7bc00}
+      \strng{fullhash}{ac2353aa25eda82255bd7b782c2db73d}
+      \strng{bibnamehash}{ac2353aa25eda82255bd7b782c2db73d}
+      \strng{authorbibnamehash}{ac2353aa25eda82255bd7b782c2db73d}
+      \strng{authornamehash}{3a5375b01cf6cca22483e21619e7bc00}
+      \strng{authorfullhash}{ac2353aa25eda82255bd7b782c2db73d}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Engineering Technology and Computer Research (IJETCR)}
+      \field{number}{1}
+      \field{title}{Stock price prediction using machine learning}
+      \field{volume}{9}
+      \field{year}{2023}
+      \field{pages}{01\bibrangedash 07}
+      \range{pages}{7}
+      \verb{urlraw}
+      \verb https://www.ijetcr.org/paper/stock-price-prediction-using-machine-learning
+      \endverb
+      \verb{url}
+      \verb https://www.ijetcr.org/paper/stock-price-prediction-using-machine-learning
+      \endverb
+    \endentry
+    \entry{brunner2023}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=576181bac3d55e9a33b01c36c244fcad}{%
+           family={S.},
+           familyi={S\bibinitperiod},
+           given={Brunner\bibnamedelima J.},
+           giveni={B\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {University of Toronto}%
+      }
+      \strng{namehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{fullhash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{bibnamehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{authorbibnamehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{authornamehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{authorfullhash}{576181bac3d55e9a33b01c36c244fcad}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2024-10-19}
+      \field{title}{Linear models in statistics}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.utstat.toronto.edu/~brunner/books/LinearModelsInStatistics.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.utstat.toronto.edu/~brunner/books/LinearModelsInStatistics.pdf
+      \endverb
+    \endentry
+    \entry{Matković2024}{inbook}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a7a787b2b0a5f0b0c0f4803961fa475b}{%
+           family={Vasilj},
+           familyi={V\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=83ef50d466484c3c243609c5fe5dc282}{%
+           family={Vučić},
+           familyi={V\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=eba3b80213ef4e857b3a17f16673b367}{%
+           family={Matković},
+           familyi={M\bibinitperiod},
+           given={Ž.},
+           giveni={Ž\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{dedd5a7b9f56e32970e5ebd42df35036}
+      \strng{fullhash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \strng{bibnamehash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \strng{authorbibnamehash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \strng{authornamehash}{dedd5a7b9f56e32970e5ebd42df35036}
+      \strng{authorfullhash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Communications in computer and information science}
+      \field{title}{Application of artificial intelligence in the economic and legal affairs of companies}
+      \field{year}{2024}
+      \field{pages}{229\bibrangedash 240}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1007/978-3-031-62058-4_14
+      \endverb
+      \verb{urlraw}
+      \verb https://link.springer.com/chapter/10.1007/978-3-031-62058-4_14
+      \endverb
+      \verb{url}
+      \verb https://link.springer.com/chapter/10.1007/978-3-031-62058-4_14
+      \endverb
+    \endentry
+  \enddatalist
+  \datalist[entry]{ynt/global//global/global}
+    \entry{liaw2002}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=e05a8b150c46a7690aa6d2fef9950ac3}{%
+           family={Liaw},
+           familyi={L\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b0aa143aedbce4568e685eb28d076e4b}{%
+           family={Wiener},
+           familyi={W\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{fullhash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{bibnamehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{authorbibnamehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{authornamehash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \strng{authorfullhash}{6b7ac86f9301cda01f887435b4a9e0b7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{R News}
+      \field{number}{3}
+      \field{title}{Classification and regression by random forest}
+      \field{volume}{2}
+      \field{year}{2002}
+      \field{pages}{18\bibrangedash 22}
+      \range{pages}{5}
+    \endentry
+    \entry{zhang2003}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=6a20c64ab4f199a4701fa536340d6e76}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={G.\bibnamedelimi P.},
+           giveni={G\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{fullhash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{bibnamehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{authorbibnamehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{authornamehash}{6a20c64ab4f199a4701fa536340d6e76}
+      \strng{authorfullhash}{6a20c64ab4f199a4701fa536340d6e76}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neurocomputing}
+      \field{title}{Time series forecasting using a hybrid ARIMA and neural network model}
+      \field{volume}{50}
+      \field{year}{2003}
+      \field{pages}{159\bibrangedash 175}
+      \range{pages}{17}
+    \endentry
+    \entry{hamzacebi2009}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=b215c0c577641bee027a2d4ec6e7b27c}{%
+           family={Hamzaçebi},
+           familyi={H\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e244fa2159fbb9838f208e1b1a8c8f1c}{%
+           family={Akay},
+           familyi={A\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2142df5e5b4899699db439a3fd20d657}{%
+           family={Kutay},
+           familyi={K\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{0ce2d2be833a6da429582a8444595a72}
+      \strng{fullhash}{039e9311171f1cc067f24f2ff89c5e10}
+      \strng{bibnamehash}{039e9311171f1cc067f24f2ff89c5e10}
+      \strng{authorbibnamehash}{039e9311171f1cc067f24f2ff89c5e10}
+      \strng{authornamehash}{0ce2d2be833a6da429582a8444595a72}
+      \strng{authorfullhash}{039e9311171f1cc067f24f2ff89c5e10}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Expert Systems with Applications}
+      \field{number}{2}
+      \field{title}{Comparison of direct and iterative artificial neural network forecast approaches in multi-periodic time series forecasting}
+      \field{volume}{36}
+      \field{year}{2009}
+      \field{pages}{3839\bibrangedash 3844}
+      \range{pages}{6}
+    \endentry
+    \entry{marsland2014}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=7c683ae801a359de5234eeee714ee0d6}{%
+           family={Marsland},
+           familyi={M\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{2}{%
+        {Chapman}%
+        {Hall/CRC}%
+      }
+      \strng{namehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{fullhash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{bibnamehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{authorbibnamehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{authornamehash}{7c683ae801a359de5234eeee714ee0d6}
+      \strng{authorfullhash}{7c683ae801a359de5234eeee714ee0d6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2nd}
+      \field{note}{Accessed: 2024-10-19}
+      \field{title}{Machine learning: An algorithmic perspective}
+      \field{year}{2014}
+      \verb{urlraw}
+      \verb http://14.139.161.31/OldFiles/Machine_Learning_An_Algorithmic_Perspective_(2nd_ed).pdf
+      \endverb
+      \verb{url}
+      \verb http://14.139.161.31/OldFiles/Machine_Learning_An_Algorithmic_Perspective_(2nd_ed).pdf
+      \endverb
+    \endentry
+    \entry{murkute2015}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=d5d14735bb9e4406ae6f4bcc0d469f2a}{%
+           family={Murkute},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b908bd99c13e7681cbf4b771d039d7dc}{%
+           family={Sarode},
+           familyi={S\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{fullhash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{bibnamehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{authorbibnamehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{authornamehash}{e7e16b66c483fd2a8284403643e757aa}
+      \strng{authorfullhash}{e7e16b66c483fd2a8284403643e757aa}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Computer Applications}
+      \field{number}{12}
+      \field{title}{Forecasting market price of stock using artificial neural network}
+      \field{volume}{124}
+      \field{year}{2015}
+      \field{pages}{11\bibrangedash 15}
+      \range{pages}{5}
+    \endentry
+    \entry{koch2021}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=6fd2d4e8d1de310fd14e33a3b8f05392}{%
+           family={Koch},
+           familyi={K\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Packt Publishing}%
+      }
+      \strng{namehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{fullhash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{bibnamehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{authorbibnamehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{authornamehash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \strng{authorfullhash}{6fd2d4e8d1de310fd14e33a3b8f05392}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2024-10-19}
+      \field{title}{Machine learning with LightGBM and Python}
+      \field{year}{2021}
+      \verb{urlraw}
+      \verb https://www.packtpub.com/en-us/product/machine-learning-with-lightgbm-and-python-9781800564749
+      \endverb
+      \verb{url}
+      \verb https://www.packtpub.com/en-us/product/machine-learning-with-lightgbm-and-python-9781800564749
+      \endverb
+    \endentry
+    \entry{wang2022}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=c8036c92eb308087403a4876f318cba0}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{fullhash}{c8036c92eb308087403a4876f318cba0}
+      \strng{bibnamehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{authorbibnamehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{authornamehash}{c8036c92eb308087403a4876f318cba0}
+      \strng{authorfullhash}{c8036c92eb308087403a4876f318cba0}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Open Journal of Modelling and Simulation}
+      \field{number}{04}
+      \field{title}{Prediction of the technology company’s stock price through the deep learning method}
+      \field{volume}{10}
+      \field{year}{2022}
+      \field{pages}{428\bibrangedash 440}
+      \range{pages}{13}
+      \verb{urlraw}
+      \verb https://doi.org/10.4236/ojmsi.2022.104024
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.4236/ojmsi.2022.104024
+      \endverb
+    \endentry
+    \entry{artificial2023}{book}{}
+      \name{editor}{4}{}{%
+        {{un=0,uniquepart=base,hash=09979b0d960a8d1cb674c7aaf2d05491}{%
+           family={Dagur},
+           familyi={D\bibinitperiod},
+           given={Arvind},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c509a2d6336c6941218176a6164526ff}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={Pawan},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=81a53f4938873adc9b58cdf2a939a3bd}{%
+           family={Mehra},
+           familyi={M\bibinitperiod},
+           given={Dhirendra\bibnamedelima Kumar},
+           giveni={D\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b4bfa6481db45bcef203c20ccd10fc8c}{%
+           family={Shukla},
+           familyi={S\bibinitperiod},
+           given={Karan\bibnamedelima Singh},
+           giveni={K\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis}%
+      }
+      \strng{namehash}{283817aca0c2b43a4cd1ed92238d1ccc}
+      \strng{fullhash}{ef2f42e39664569a17e6f4dbf659027a}
+      \strng{bibnamehash}{ef2f42e39664569a17e6f4dbf659027a}
+      \strng{editorbibnamehash}{ef2f42e39664569a17e6f4dbf659027a}
+      \strng{editornamehash}{283817aca0c2b43a4cd1ed92238d1ccc}
+      \strng{editorfullhash}{ef2f42e39664569a17e6f4dbf659027a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{editor}
+      \field{labeltitlesource}{title}
+      \field{title}{Artificial intelligence, blockchain, computing and security volume 1}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.taylorfrancis.com/books/edit/10.1201/9781003393580/artificial-intelligence-blockchain-computing-security-volume-1-arvind-dagur-pawan-singh-mehra-dhirendra-kumar-shukla-karan-singh
+      \endverb
+      \verb{url}
+      \verb https://www.taylorfrancis.com/books/edit/10.1201/9781003393580/artificial-intelligence-blockchain-computing-security-volume-1-arvind-dagur-pawan-singh-mehra-dhirendra-kumar-shukla-karan-singh
+      \endverb
+    \endentry
+    \entry{pandey2023}{article}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=83f15ee55e6e832a701b631344d1ab77}{%
+           family={Pandey},
+           familyi={P\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9843b981a347092faf6faad9f1b9bcdd}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9843b981a347092faf6faad9f1b9bcdd}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{3a5375b01cf6cca22483e21619e7bc00}
+      \strng{fullhash}{ac2353aa25eda82255bd7b782c2db73d}
+      \strng{bibnamehash}{ac2353aa25eda82255bd7b782c2db73d}
+      \strng{authorbibnamehash}{ac2353aa25eda82255bd7b782c2db73d}
+      \strng{authornamehash}{3a5375b01cf6cca22483e21619e7bc00}
+      \strng{authorfullhash}{ac2353aa25eda82255bd7b782c2db73d}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Engineering Technology and Computer Research (IJETCR)}
+      \field{number}{1}
+      \field{title}{Stock price prediction using machine learning}
+      \field{volume}{9}
+      \field{year}{2023}
+      \field{pages}{01\bibrangedash 07}
+      \range{pages}{7}
+      \verb{urlraw}
+      \verb https://www.ijetcr.org/paper/stock-price-prediction-using-machine-learning
+      \endverb
+      \verb{url}
+      \verb https://www.ijetcr.org/paper/stock-price-prediction-using-machine-learning
+      \endverb
+    \endentry
+    \entry{brunner2023}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=576181bac3d55e9a33b01c36c244fcad}{%
+           family={S.},
+           familyi={S\bibinitperiod},
+           given={Brunner\bibnamedelima J.},
+           giveni={B\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {University of Toronto}%
+      }
+      \strng{namehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{fullhash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{bibnamehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{authorbibnamehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{authornamehash}{576181bac3d55e9a33b01c36c244fcad}
+      \strng{authorfullhash}{576181bac3d55e9a33b01c36c244fcad}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2024-10-19}
+      \field{title}{Linear models in statistics}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.utstat.toronto.edu/~brunner/books/LinearModelsInStatistics.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.utstat.toronto.edu/~brunner/books/LinearModelsInStatistics.pdf
+      \endverb
+    \endentry
+    \entry{Matković2024}{inbook}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a7a787b2b0a5f0b0c0f4803961fa475b}{%
+           family={Vasilj},
+           familyi={V\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=83ef50d466484c3c243609c5fe5dc282}{%
+           family={Vučić},
+           familyi={V\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=eba3b80213ef4e857b3a17f16673b367}{%
+           family={Matković},
+           familyi={M\bibinitperiod},
+           given={Ž.},
+           giveni={Ž\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{dedd5a7b9f56e32970e5ebd42df35036}
+      \strng{fullhash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \strng{bibnamehash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \strng{authorbibnamehash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \strng{authornamehash}{dedd5a7b9f56e32970e5ebd42df35036}
+      \strng{authorfullhash}{48ccd967cf2ed272bfaa6a657f4c42ef}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Communications in computer and information science}
+      \field{title}{Application of artificial intelligence in the economic and legal affairs of companies}
+      \field{year}{2024}
+      \field{pages}{229\bibrangedash 240}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1007/978-3-031-62058-4_14
+      \endverb
+      \verb{urlraw}
+      \verb https://link.springer.com/chapter/10.1007/978-3-031-62058-4_14
+      \endverb
+      \verb{url}
+      \verb https://link.springer.com/chapter/10.1007/978-3-031-62058-4_14
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
