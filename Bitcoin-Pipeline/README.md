@@ -1,21 +1,20 @@
-# 🚀 Bitcoin Data Pipeline
+# Bitcoin Data Pipeline
 
-A robust, containerized **Bitcoin OHLC Data Pipeline** fetching real-time and historical cryptocurrency price data from Binance, storing it in PostgreSQL, orchestrated with Apache Airflow—all inside Docker.
-
----
-
-## 🌟 Features
-
-✅ Real-time & historical OHLC price data from Binance  
-✅ Data stored in structured PostgreSQL tables  
-✅ Workflow orchestration with Apache Airflow  
-✅ Full monitoring via Airflow UI  
-✅ Easy setup with Docker & Docker Compose  
-✅ Next step: Azure Cloud deployment, Machine Learning pipelines, and Power BI dashboards  
+Containerized Bitcoin OHLC data pipeline that ingests historical and realtime candles from Binance, stores them in PostgreSQL, and orchestrates jobs with Apache Airflow.
 
 ---
 
-## 🏗️ Architecture
+## Features
+
+- Historical backfill DAG for bootstrap loading
+- Realtime DAG scheduled every minute
+- PostgreSQL persistence with idempotent inserts
+- Docker Compose stack for local reproducible setup
+- Airflow UI for scheduling and monitoring
+
+---
+
+## Architecture
 
 ```
 ┌──────────────┐       ┌──────────────┐       ┌──────────────┐
@@ -30,7 +29,7 @@ A robust, containerized **Bitcoin OHLC Data Pipeline** fetching real-time and hi
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
 - Docker & Docker Compose  
 - Apache Airflow  
@@ -41,37 +40,45 @@ A robust, containerized **Bitcoin OHLC Data Pipeline** fetching real-time and hi
 
 ---
 
-## 🗃️ Project Structure
+## Project Structure
 
 ```
-.
+Bitcoin-Pipeline/
 ├── dags/
-│   └── bitcoin_dag.py           # Airflow DAGs for OHLC pipeline
-├── docker-compose.yml           # Multi-container Docker setup
-├── .env                         # Environment variables
-├── requirements.txt             # Python dependencies
-└── README.md                    # Project documentation
+│   ├── bitcoin_historical_loader.py   # Backfill historical candles
+│   └── bitcoin_realtime_pipeline.py   # Realtime minute ingestion
+├── docker-compose.yml                 # Airflow + Postgres + pgAdmin stack
+├── .env.example                       # Example environment config
+├── data_fetcher/
+│   └── fetch_binance_ohlc_complete.py
+└── README.md
 ```
 
 ---
 
-## ⚡ Quick Setup Guide
+## Quick Setup
 
 ### 1️⃣ Prerequisites
 
 - Docker & Docker Compose installed  
 - At least 4GB free RAM  
 
-### 2️⃣ Clone the Repository
+### 2) Clone the repository
 
 ```bash
 git clone <your-repo-url>
-cd bitcoin-data-pipeline
+cd Projects/Bitcoin-Pipeline
 ```
 
-### 3️⃣ Configure Environment Variables
+### 3) Configure environment variables
 
-Example `.env` file:
+Create `.env` from the example file:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` values if needed:
 
 ```env
 # PostgreSQL Configuration
@@ -87,16 +94,7 @@ PGADMIN_DEFAULT_PASSWORD=admin
 AIRFLOW_UID=50000
 ```
 
-**Create the `.env` file:**
-
-```bash
-cp .env.example .env
-# Edit values as needed
-```
-
----
-
-### 4️⃣ Build and Start Containers
+### 4) Build and start containers
 
 ```bash
 docker-compose up -d --build
@@ -104,7 +102,7 @@ docker-compose up -d --build
 
 ---
 
-### 5️⃣ Access Services
+### 5) Access services
 
 | Service           | URL                     | Credentials             |
 |-------------------|-------------------------|--------------------------|
@@ -113,7 +111,7 @@ docker-compose up -d --build
 
 ---
 
-## 🎛️ Airflow Configuration
+## Airflow Configuration
 
 1. Open Airflow UI → Admin → Connections  
 2. Create a Postgres connection:
@@ -130,35 +128,31 @@ docker-compose up -d --build
 
 ---
 
-## 🗓️ Pipeline Workflow
+## Pipeline Workflow
 
-DAG: `bitcoin_ohlc_full_pipeline`
+Historical DAG: `bitcoin_historical_loader`
+- Trigger manually to backfill candles from configured start date.
 
-✅ Fetch historical OHLC data from Binance  
-✅ Continuously fetch live OHLC data every minute  
-✅ Store data in PostgreSQL  
-✅ Full orchestration and monitoring via Airflow  
-
----
-
-## 🗄️ Database Schema
-
-**Table:** `ohlc_data`
-
-| Column     | Type      | Description          |
-|------------|-----------|----------------------|
-| symbol     | TEXT      | Trading pair (e.g., BTCUSDT) |
-| interval   | TEXT      | Timeframe (e.g., 1m, 1h) |
-| timestamp  | TIMESTAMP | OHLC data timestamp  |
-| open       | DECIMAL   | Opening price        |
-| high       | DECIMAL   | Highest price        |
-| low        | DECIMAL   | Lowest price         |
-| close      | DECIMAL   | Closing price        |
-| volume     | DECIMAL   | Trade volume         |
+Realtime DAG: `bitcoin_realtime_pipeline`
+- Runs every minute and appends latest candle.
 
 ---
 
-## 🔧 Common Commands
+## Database Schema
+
+Table: `bitcoin_ohlc`
+
+| Column     | Type      | Description |
+|------------|-----------|-------------|
+| timestamp  | TIMESTAMP | Candle timestamp (PK) |
+| open       | FLOAT     | Open price |
+| high       | FLOAT     | High price |
+| low        | FLOAT     | Low price |
+| close      | FLOAT     | Close price |
+
+---
+
+## Common Commands
 
 ```bash
 # View running containers
@@ -168,27 +162,25 @@ docker-compose ps
 docker-compose logs -f airflow-scheduler
 
 # Query PostgreSQL for data
-docker-compose exec postgres psql -U airflow -d bitcoin -c "SELECT * FROM ohlc_data LIMIT 5;"
+docker-compose exec postgres psql -U airflow -d airflow -c "SELECT * FROM bitcoin_ohlc ORDER BY timestamp DESC LIMIT 5;"
 ```
 
 ---
 
-## 📊 Future Enhancements
+## Future Enhancements
 
-✅ Real-time Bitcoin OHLC data pipeline (Complete)  
-🚀 Next: Azure Cloud Deployment (ACI + ACR)  
-🧠 Add Machine Learning pipelines for price prediction  
-📊 Visualize insights & predictions using Power BI  
+- Add data quality checks and alerts in DAG tasks
+- Add partitioned storage strategy for long retention
+- Add cloud deployment profile (managed Airflow + Postgres)
+- Add downstream feature engineering and model training jobs
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions welcome! Fork this repo and submit your improvements.
 
 ---
 
-## 📢 Stay Connected
-
-Follow along as this project evolves from local containers to full cloud deployment with ML-powered analytics!
+Improvements and PRs are welcome.
 

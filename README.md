@@ -1,20 +1,33 @@
-# 🌟 Data Science & Engineering Projects  
+# Data Science and Data Engineering Projects
 
-Welcome to my **Data Science & Engineering Projects** repository! 🚀  
+Collection of technical projects spanning data engineering pipelines, quantitative analysis, and machine learning.
 
-This repository contains a collection of my **data science** and **data engineering** projects, covering various domains such as **machine learning, data analytics, automation, and big data processing**. Each project demonstrates different tools, techniques, and best practices used in the industry.  
+## Featured Project
 
-## 🚀 Technologies & Tools  
+### Bitcoin Pipeline
+Production-style data pipeline for Bitcoin OHLC ingestion using Apache Airflow, PostgreSQL, and Docker.
 
-🔹 **Programming Languages**: Python, SQL, R  
-🔹 **Libraries & Frameworks**: Pandas, NumPy, Scikit-Learn, TensorFlow, PyTorch  
-🔹 **Data Engineering Tools**: Apache Spark, Airflow, Hadoop  
-🔹 **Databases**: PostgreSQL, MongoDB, BigQuery  
-🔹 **Visualization**: Matplotlib, Seaborn, Tableau 
+- Path: `Bitcoin-Pipeline/`
+- Focus: historical backfill + minute-level realtime ingestion
+- Stack: `Python` `Airflow` `PostgreSQL` `Docker`
 
-🤝 Contributing
-Contributions, suggestions, and feedback are always welcome! Feel free to open an issue or submit a pull request.
+## Repository Layout
 
-📄 License
+- `Bitcoin-Pipeline/` - Airflow DAGs and compose stack for market data ingestion
+- `Crude-Oil/` - crude oil analytics notebooks and forecasting experiments
+- `BDA_Project/` - big data coursework and scripts
+- `ML Projects/` - machine learning notebooks
+- `Stats-Lab/` - statistics lab work
+
+## Tech Used
+
+`Python` `SQL` `Airflow` `PostgreSQL` `Docker` `Pandas` `NumPy` `Scikit-learn`
+
+## Contributing
+
+Contributions, suggestions, and improvements are welcome.
+
+## License
+
 This repository is licensed under the MIT License.
 

@@ -1,10 +1,6 @@
-# Python virtual env
+# Python virtual environments
 venv/
 .venv/
-.venv/
-
-# Jupyter Notebook Checkpoints
-.ipynb_checkpoints/
 
 # Python cache
 __pycache__/
@@ -12,10 +8,24 @@ __pycache__/
 *.pyo
 *.pyd
 
-# VS Code settings (optional)
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE/editor
 .vscode/
 
-# Data files
+# Secrets and local env
+.env
+.env.*
+!.env.example
+
+# Local logs/runtime
+*.log
+logs/
+
+# Local databases/artifacts
 *.sqlite
 *.db
-*.json
+
+# Airflow local metadata (if generated)
+airflow-webserver.pid
